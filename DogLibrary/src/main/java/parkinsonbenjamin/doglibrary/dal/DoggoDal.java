@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface DoggoDal {
 
-    int addDog(String name, String breed);
+    int addDog(String name, String breed) throws DogException;
     int addUser(String username, String firstname, String surname, String favouriteBreed, String passwordHash) throws DogException;
     boolean authenticateUser(String username, String passwordHash);
     void favouriteDog(int userId, int dogId) throws DogException;

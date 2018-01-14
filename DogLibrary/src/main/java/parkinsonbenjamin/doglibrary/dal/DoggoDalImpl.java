@@ -19,8 +19,34 @@ public class DoggoDalImpl implements DoggoDal {
     }
 
     @Override
-    public int addDog(String name, String breed) {
-        return 0;
+    public int addDog(String name, String breed) throws DogException {
+        Connection connection = null;
+        CallableStatement callableStatement = null;
+        try {
+            connection = connectionFactory.getConnection();
+            callableStatement = connection.prepareCall("{call addDog(?,?,?)");
+            callableStatement.setString(1, name);
+            callableStatement.setString(2, breed);
+            callableStatement.registerOutParameter(3, Types.INTEGER);
+
+            callableStatement.execute();
+            int newDogId = callableStatement.getInt(3);
+            return newDogId;
+        } catch (SQLException e) {
+            throw new DogException(String.format("Exception caught adding dog! Name: %s, Breed: %s", name, breed), e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+
+                if (callableStatement != null) {
+                    callableStatement.close();
+                }
+            } catch (SQLException e) {
+                throw new DogException("Could not close connection/statement!", e);
+            }
+        }
     }
 
     @Override
