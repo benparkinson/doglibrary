@@ -9,8 +9,9 @@ public class User {
     private String favouriteBreed;
     private boolean withdrawnDog;
     private Integer withdrawnDogId;
+    private String passwordHash;
 
-    public User(int userId, String firstName, String surname, String username, String favouriteBreed) {
+    public User(int userId, String firstName, String surname, String username, String favouriteBreed, String passwordHash) {
         this.userId = userId;
         this.firstName = firstName;
         this.surname = surname;
@@ -50,5 +51,9 @@ public class User {
     private void returnDog() {
         withdrawnDogId = null;
         withdrawnDog = false;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
     }
 }

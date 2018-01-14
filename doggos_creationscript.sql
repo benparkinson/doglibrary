@@ -61,7 +61,7 @@ on d.breedid = b.breedid;
 DELIMITER //
 create procedure getAllUsers()
 begin
-select u.userid, u.username, u.firstname, u.surname, b.breedname
+select u.userid, u.username, u.firstname, u.surname, b.breedname, u.passwordhash
 from users u
 inner join
 breeds b
@@ -96,9 +96,9 @@ DELIMITER //
 create procedure addDog(param_name varchar(100), param_breed varchar(100), out param_newdogid int)
 begin
 declare breed_id int;
-set breed_id = (select breedid from breeds where breedname = param_favourite_breed);
+set breed_id = (select breedid from breeds where breedname = param_breed);
 if (breed_id is NULL) then
-    insert into breeds (breedName) values (param_favourite_breed); 
+    insert into breeds (breedName) values (param_breed); 
     set breed_id = (select last_insert_id());
 end if;
 insert into dogs (name, breedid) values (param_name, breed_id);

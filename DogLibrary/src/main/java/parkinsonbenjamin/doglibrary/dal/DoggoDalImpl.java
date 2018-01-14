@@ -24,7 +24,7 @@ public class DoggoDalImpl implements DoggoDal {
         CallableStatement callableStatement = null;
         try {
             connection = connectionFactory.getConnection();
-            callableStatement = connection.prepareCall("{call addDog(?,?,?)");
+            callableStatement = connection.prepareCall("{call addDog(?,?,?)}");
             callableStatement.setString(1, name);
             callableStatement.setString(2, breed);
             callableStatement.registerOutParameter(3, Types.INTEGER);
@@ -56,7 +56,7 @@ public class DoggoDalImpl implements DoggoDal {
         CallableStatement callableStatement = null;
         try {
             connection = connectionFactory.getConnection();
-            callableStatement = connection.prepareCall("{call addUser(?,?,?,?,?,?)");
+            callableStatement = connection.prepareCall("{call addUser(?,?,?,?,?,?)}");
             callableStatement.setString(1, username);
             callableStatement.setString(2, firstname);
             callableStatement.setString(3, surname);
@@ -87,17 +87,12 @@ public class DoggoDalImpl implements DoggoDal {
     }
 
     @Override
-    public boolean authenticateUser(String username, String passwordHash) {
-        return false;
-    }
-
-    @Override
     public void favouriteDog(int userId, int dogId) throws DogException {
         Connection connection = null;
         CallableStatement callableStatement = null;
         try {
             connection = connectionFactory.getConnection();
-            callableStatement = connection.prepareCall("{call favouriteDog(?,?)");
+            callableStatement = connection.prepareCall("{call favouriteDog(?,?)}");
             callableStatement.setInt(1, userId);
             callableStatement.setInt(2, dogId);
             callableStatement.execute();
@@ -125,7 +120,7 @@ public class DoggoDalImpl implements DoggoDal {
         CallableStatement callableStatement = null;
         try {
             connection = connectionFactory.getConnection();
-            callableStatement = connection.prepareCall("{call unFavouriteDog(?,?)");
+            callableStatement = connection.prepareCall("{call unFavouriteDog(?,?)}");
             callableStatement.setInt(1, userId);
             callableStatement.setInt(2, dogId);
             callableStatement.execute();
@@ -153,7 +148,7 @@ public class DoggoDalImpl implements DoggoDal {
         CallableStatement callableStatement = null;
         try {
             connection = connectionFactory.getConnection();
-            callableStatement = connection.prepareCall("{call withdrawDog(?,?)");
+            callableStatement = connection.prepareCall("{call withdrawDog(?,?)}");
             callableStatement.setInt(1, userId);
             callableStatement.setInt(2, dogId);
             callableStatement.execute();
@@ -180,7 +175,7 @@ public class DoggoDalImpl implements DoggoDal {
         CallableStatement callableStatement = null;
         try {
             connection = connectionFactory.getConnection();
-            callableStatement = connection.prepareCall("{call returnDog(?)");
+            callableStatement = connection.prepareCall("{call returnDog(?)}");
             callableStatement.setInt(1, userId);
             callableStatement.execute();
         } catch (SQLException e) {
@@ -207,7 +202,7 @@ public class DoggoDalImpl implements DoggoDal {
         try {
             List<Dog> dogs = new ArrayList<>();
             connection = connectionFactory.getConnection();
-            callableStatement = connection.prepareCall("{call getAllDogs()");
+            callableStatement = connection.prepareCall("{call getAllDogs()}");
             if (callableStatement.execute()) {
                 ResultSet resultSet = callableStatement.getResultSet();
                 while (resultSet.next()) {
@@ -243,7 +238,7 @@ public class DoggoDalImpl implements DoggoDal {
         try {
             List<User> users = new ArrayList<>();
             connection = connectionFactory.getConnection();
-            callableStatement = connection.prepareCall("{call getAllUsers()");
+            callableStatement = connection.prepareCall("{call getAllUsers()}");
             if (callableStatement.execute()) {
                 ResultSet resultSet = callableStatement.getResultSet();
                 while (resultSet.next()) {
@@ -252,8 +247,9 @@ public class DoggoDalImpl implements DoggoDal {
                     String firstname = resultSet.getString("firstname");
                     String surname = resultSet.getString("surname");
                     String favouriteBreed = resultSet.getString("breedname");
+                    String passwordHash = resultSet.getString("passwordhash");
 
-                    users.add(new User(userid, firstname, surname, username, favouriteBreed));
+                    users.add(new User(userid, firstname, surname, username, favouriteBreed, passwordHash));
                 }
             }
             return users;
@@ -281,7 +277,7 @@ public class DoggoDalImpl implements DoggoDal {
         try {
             List<Withdrawal> withdrawals = new ArrayList<>();
             connection = connectionFactory.getConnection();
-            callableStatement = connection.prepareCall("{call getCurrentWithdrawals()");
+            callableStatement = connection.prepareCall("{call getCurrentWithdrawals()}");
             if (callableStatement.execute()) {
                 ResultSet resultSet = callableStatement.getResultSet();
                 while (resultSet.next()) {
@@ -318,7 +314,7 @@ public class DoggoDalImpl implements DoggoDal {
         try {
             List<Integer> faves = new ArrayList<>();
             connection = connectionFactory.getConnection();
-            callableStatement = connection.prepareCall("{call getFavesForUser(?)");
+            callableStatement = connection.prepareCall("{call getFavesForUser(?)}");
             callableStatement.setInt(1, userId);
             if (callableStatement.execute()) {
                 ResultSet resultSet = callableStatement.getResultSet();

@@ -11,7 +11,6 @@ public interface DoggoDal {
 
     int addDog(String name, String breed) throws DogException;
     int addUser(String username, String firstname, String surname, String favouriteBreed, String passwordHash) throws DogException;
-    boolean authenticateUser(String username, String passwordHash);
     void favouriteDog(int userId, int dogId) throws DogException;
     void unfavouriteDog(int userId, int dogId) throws DogException;
     void withdrawDog(int userId, int dogId) throws DogException;

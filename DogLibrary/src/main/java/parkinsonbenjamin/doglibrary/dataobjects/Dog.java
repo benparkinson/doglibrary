@@ -1,6 +1,8 @@
 package parkinsonbenjamin.doglibrary.dataobjects;
 
-public class Dog {
+import org.json.simple.JSONObject;
+
+public class Dog implements JSONObj {
 
     private int dogId;
     private String name;
@@ -35,5 +37,15 @@ public class Dog {
 
     public void giveBack(){
         this.available = true;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject ret = new JSONObject();
+        ret.put("dogId", dogId);
+        ret.put("name", name);
+        ret.put("breed", breed);
+        ret.put("available", available);
+        return ret;
     }
 }
