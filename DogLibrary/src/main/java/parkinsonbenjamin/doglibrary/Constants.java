@@ -13,7 +13,7 @@ public class Constants {
     // GET
     public static final String FAVOURITES = "/favourites";
     // PUT/DELETE
-    public static final String WITHDRAW_DOG = "/withdrawals.:dogid";
+    public static final String WITHDRAW_DOG = "/withdrawals/:dogid";
     // POST
     public static final String ADD_USER = "/users/add";
 
