@@ -1,4 +1,8 @@
 package parkinsonbenjamin.doglibrary.processor;
 
-public class FavouritesProcessor {
+public class FavouritesProcessor implements Processor {
+    @Override
+    public void initialise() {
+
+    }
 }

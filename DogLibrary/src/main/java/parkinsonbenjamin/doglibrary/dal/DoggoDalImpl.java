@@ -9,10 +9,13 @@ import parkinsonbenjamin.doglibrary.exceptions.DogException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DoggoDalImpl implements DoggoDal {
 
     private final DbConnectionFactory connectionFactory;
+    private AtomicReference<List<User>> cachedUsers = new AtomicReference<>();
+    private AtomicReference<List<Dog>> cachedDogs = new AtomicReference<>();
 
     public DoggoDalImpl(String host, int port, String dbName, String username, String password) {
         connectionFactory = new DbConnectionFactory(host, port, dbName, username, password);
@@ -31,6 +34,7 @@ public class DoggoDalImpl implements DoggoDal {
 
             callableStatement.execute();
             int newDogId = callableStatement.getInt(3);
+            invalidateDogCache();
             return newDogId;
         } catch (SQLException e) {
             throw new DogException(String.format("Exception caught adding dog! Name: %s, Breed: %s", name, breed), e);
@@ -47,6 +51,10 @@ public class DoggoDalImpl implements DoggoDal {
                 throw new DogException("Could not close connection/statement!", e);
             }
         }
+    }
+
+    private void invalidateDogCache() {
+        cachedDogs.set(null);
     }
 
     @Override
@@ -66,6 +74,8 @@ public class DoggoDalImpl implements DoggoDal {
 
             callableStatement.execute();
             int newUserId = callableStatement.getInt(6);
+
+            invalidateUserCache();
             return newUserId;
         } catch (SQLException e) {
             throw new DogException(String.format("Exception caught adding user! Username: %s, Firstname: %s, " +
@@ -84,6 +94,10 @@ public class DoggoDalImpl implements DoggoDal {
                 throw new DogException("Could not close connection/statement!", e);
             }
         }
+    }
+
+    private void invalidateUserCache() {
+        cachedUsers.set(null);
     }
 
     @Override
@@ -197,6 +211,11 @@ public class DoggoDalImpl implements DoggoDal {
 
     @Override
     public List<Dog> getAllDogs() throws DogException {
+        List<Dog> dogCache = this.cachedDogs.get();
+        if (dogCache != null) {
+            return dogCache;
+        }
+
         Connection connection = null;
         CallableStatement callableStatement = null;
         try {
@@ -213,6 +232,7 @@ public class DoggoDalImpl implements DoggoDal {
                     dogs.add(new Dog(dogid, name, breedName));
                 }
             }
+            cachedDogs.set(dogs);
             return dogs;
         } catch (SQLException e) {
             throw new DogException("Exception caught getting dogs!", e);
@@ -233,6 +253,11 @@ public class DoggoDalImpl implements DoggoDal {
 
     @Override
     public List<User> getAllUsers() throws DogException {
+        List<User> userCache = this.cachedUsers.get();
+        if (userCache != null) {
+            return userCache;
+        }
+
         Connection connection = null;
         CallableStatement callableStatement = null;
         try {
@@ -252,6 +277,7 @@ public class DoggoDalImpl implements DoggoDal {
                     users.add(new User(userid, firstname, surname, username, favouriteBreed, passwordHash));
                 }
             }
+            cachedUsers.set(users);
             return users;
         } catch (SQLException e) {
             throw new DogException("Exception caught getting users!", e);
