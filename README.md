@@ -1,2 +1,2 @@
 # doglibrary
-Personal project to help learn MySQL, REST, and Android
+sandbox for playing around with some new technologies
